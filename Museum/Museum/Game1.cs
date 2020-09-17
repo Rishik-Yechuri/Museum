@@ -18,7 +18,19 @@ namespace Museum
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Rectangle rectangle;
+        Texture2D texture;
 
+        Rectangle personTangle;
+        Texture2D personTure;
+        Texture2D personTureDown;
+
+
+        Rectangle painting;
+        Texture2D paintingTexture;
+        int personX;
+        int personY;
+        bool holdUp;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -34,7 +46,12 @@ namespace Museum
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            holdUp = true;
+            personX = 30;
+            personY = 250;
+            rectangle = new Rectangle(0,0,939,375);
+            personTangle = new Rectangle(personX,personY,86,100);
+            painting = new Rectangle(personX + 50,personY - 50,115,64);
             base.Initialize();
         }
 
@@ -48,6 +65,10 @@ namespace Museum
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            texture = this.Content.Load<Texture2D>("museum");
+            personTure = this.Content.Load<Texture2D>("handsup");
+            personTureDown = this.Content.Load<Texture2D>("handsdown");
+            paintingTexture = this.Content.Load<Texture2D>("painting");
         }
 
         /// <summary>
@@ -71,7 +92,20 @@ namespace Museum
                 this.Exit();
 
             // TODO: Add your update logic here
-
+            if (!holdUp) {
+                personX -= 1;
+                personTangle.X = personX;
+            }
+            if (personX < 645 && holdUp)
+            {
+                personX += 1;
+                personTangle.X = personX;
+                painting.X = personX + 50;
+            }
+            else {
+                holdUp = false;
+                personTangle = new Rectangle(personX, personY, 89, 100);
+            }
             base.Update(gameTime);
         }
 
@@ -84,7 +118,17 @@ namespace Museum
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-
+            spriteBatch.Begin();
+            spriteBatch.Draw(texture, rectangle, Color.White);
+            if (holdUp)
+            {
+                spriteBatch.Draw(personTure, personTangle, Color.White);
+            }
+            else {
+                spriteBatch.Draw(personTureDown,personTangle,Color.White);
+            }
+            spriteBatch.Draw(paintingTexture,painting,Color.White);
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
